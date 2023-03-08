@@ -4,10 +4,30 @@ const  useWordle= (solution) => {
     const [turn , setTurn] = useState(0)
     const [currentGuess, setCurrentGuess] = useState('')
     const  [guesses, setGuesses] = useState([])
-    const [history , setHistory] = useState([])
+    const [history , setHistory] = useState(['hello','ninja'])
     const [inCorrect, setInCorrect] = useState(false)
+
     const formatGuess = () =>{
-        console.log('formatting the guess - ',currentGuess)
+       let solutionArray=[...solution]
+       let formattedGuess = [...currentGuess].map((l) =>{
+           return {key : l, color :'grey'}
+       })
+
+        formattedGuess.forEach((l,i) => {
+            if(solutionArray[i] === l.key){
+                formattedGuess[i].color = 'green'
+                solutionArray[i] = null
+            }
+        })
+
+        formattedGuess.forEach((l,i ) =>{
+            if(solutionArray.includes(l.key) && l.color !== 'green'){
+                formattedGuess[i].color = 'yellow'
+                solutionArray[solutionArray.indexOf(l.key)] = null
+            }
+        })
+
+        return formattedGuess
     }
 
     const addNewGuess = () => {
@@ -17,18 +37,19 @@ const  useWordle= (solution) => {
     const handleKeyup = ({key}) => {
         if(key === 'Enter'){
             if(turn > 5){
-                console.log("너는 모는 기회를 썻다")
+                console.log("기회 5번 다씀")
                 return
             }
             if(history.includes(currentGuess)){
-                console.log("너는 ")
+                console.log("정답?")
                 return
             }
             if(currentGuess.length !== 5 ){
-                console.log("너는 모는")
+                console.log("5개가 아니다.")
                 return
             }
-            formatGuess()
+            const formatted = formatGuess()
+            console.log(formatted)
         }
 
         if(key === 'Backspace'){
